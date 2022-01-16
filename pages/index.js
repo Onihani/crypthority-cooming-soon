@@ -44,11 +44,11 @@ function Home() {
             "-webkit-box-align": "center",
           }}
         >
-          {/* Cryptority Logo */}
+          {/* Crypthority Logo */}
           <div className="pt-10 text-center z-50">
             <a href="#">
               <h4 className="text-slate-200 font-semibold text-xl md:text-2xl">
-                Cryptority
+                Crypthority
               </h4>
             </a>
           </div>
@@ -373,7 +373,7 @@ function Home() {
               style={{ color: "rgba(142, 199, 255, 0.6)" }}
             >
               <span>
-                Copyright {new Date().getFullYear()} by <b>Cryptority</b>. All
+                Copyright {new Date().getFullYear()} by <b>Crypthority</b>. All
                 rights reserved
               </span>
             </p>
