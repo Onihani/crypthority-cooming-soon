@@ -7,7 +7,7 @@ import { FaInstagram, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
 import { getTimeRemaining } from "../src/helpers";
 
 function Home() {
-  const launchDate = new Date("01-25-2022");
+  const launchDate = new Date(2022, 1, 25);
   const initialDate = getTimeRemaining(launchDate);
 
   const daysRef = useRef();
