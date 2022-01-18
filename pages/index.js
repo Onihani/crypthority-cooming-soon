@@ -1,14 +1,22 @@
 // react
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 // particles
 import Particles from "react-tsparticles";
 // react icons
 import { FaInstagram, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
-import { getTimeRemaining } from "../src/helpers";
+// react toastify
+import { toast } from "react-toastify";
+// axios
+import axios from "axios";
+
+// helpers
+import { getTimeRemaining, validateEmail } from "../src/helpers";
 
 function Home() {
   const launchDate = new Date(2022, 0, 25);
   const initialDate = getTimeRemaining(launchDate);
+
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const daysRef = useRef();
   const hoursRef = useRef();
@@ -32,6 +40,60 @@ function Home() {
       return () => clearInterval(timeinterval);
     }, 1000);
   });
+
+  const onSubscribeToMailingList = async (event) => {
+    event.preventDefault();
+    setSubmitting(true);
+    const toastId = toast.loading("Processing your request...");
+
+    const formElem = event.target;
+    const email = formElem.email.value;
+    
+    if (!validateEmail(email)) {
+      toast.update(toastId, {
+        render:
+          "Please enter a valid email address.",
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+        closeOnClick: true,
+      });
+
+      setSubmitting(false)
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/mail-subscriptions", { email });
+
+      const { data } = response.data;
+
+      toast.update(toastId, {
+        render: `Your email (${data.email}) has been added to our mailing list. We would alert you when we are live`,
+        type: "success",
+        isLoading: false,
+        autoClose: 4000,
+        closeOnClick: true,
+      });
+
+      formElem.reset();
+      setSubmitting(false);
+    } catch (error) {
+      console.error(error);
+
+      toast.update(toastId, {
+        render:
+          "Something went wrong. We couldn't add your email to our mailing list. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+        closeOnClick: true,
+      });
+
+      formElem.reset();
+      setSubmitting(false);
+    }
+  };
 
   return (
     <main className="outline-none" tabIndex={-1}>
@@ -134,11 +196,11 @@ function Home() {
                 style={{ color: "rgba(142, 199, 255, 0.6)" }}
               >
                 <span>
-                  Follow us via social media to get updated when we are live
+                  Follow us on our social media platforms for updates.
                 </span>
                 <br />
                 <span>
-                  Or enter you email below so we alert you when we are live
+                  Enter your email address to be alerted when we go live
                 </span>
               </p>
               {/* timer area */}
@@ -292,12 +354,16 @@ function Home() {
                 </div>
               </div>
               {/* notify me area */}
-              <form className="relative w-full md:w-auto flex flex-col md:flex-row mt-8 z-[2] mb-0">
+              <form
+                className="relative w-full md:w-auto flex flex-col md:flex-row mt-8 z-[2] mb-0"
+                onSubmit={onSubscribeToMailingList}
+              >
                 <div className="relative w-full md:w-[316px] mx-5">
                   <div className="block w-full">
                     <div className="relative w-full bg-transparent">
                       <div className="relative w-full overflow-hidden">
                         <input
+                          name="email"
                           type="email"
                           className="appearance-none block bg-transparent border-b text-sm md:text-base outline-0 p-0 mt-0 w-full h-12 overflow-visible"
                           placeholder="Enter email address"
@@ -310,7 +376,11 @@ function Home() {
                     </div>
                   </div>
                 </div>
-                <button className="cursor-pointer inline-flex items-center justify-center text-white bg-gradient-to-br from-blue-600 to-sky-400 min-h-[32px] min-w-[32px] md:min-h-[48px] md:min-w-[48px] rounded-md text-base font-medium px-5 py-2 md:px-9 md:py-3 uppercase">
+                <button
+                  disabled={isSubmitting}
+                  type="submit"
+                  className="cursor-pointer inline-flex items-center justify-center text-white bg-gradient-to-br from-blue-600 to-sky-400 min-h-[32px] min-w-[32px] md:min-h-[48px] md:min-w-[48px] rounded-md text-base font-medium px-5 py-2 md:px-9 md:py-3 uppercase"
+                >
                   <span>
                     <span>Alert Me</span>
                   </span>
@@ -369,7 +439,7 @@ function Home() {
             </div>
             {/* copyright */}
             <p
-              className="mt-6 leading-[1.5] text-center mb-0"
+              className="mt-6 text-[12px] md:text-base leading-[1.5] text-center mb-0"
               style={{ color: "rgba(142, 199, 255, 0.6)" }}
             >
               <span>
