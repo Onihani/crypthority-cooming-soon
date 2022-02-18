@@ -28,13 +28,17 @@ function Home() {
       const { total, days, hours, minutes, seconds } =
         getTimeRemaining(launchDate);
 
-      daysRef.current.innerText = days;
-      hoursRef.current.innerText = hours;
-      minutesRef.current.innerText = minutes;
-      secondsRef.current.innerText = seconds;
-
       if (total <= 0) {
         clearInterval(timeinterval);
+        daysRef.current.innerText = 0;
+        hoursRef.current.innerText = 0;
+        minutesRef.current.innerText = 0;
+        secondsRef.current.innerText = 0;
+      } else {
+        daysRef.current.innerText = days;
+        hoursRef.current.innerText = hours;
+        minutesRef.current.innerText = minutes;
+        secondsRef.current.innerText = seconds;
       }
 
       return () => clearInterval(timeinterval);
@@ -48,18 +52,17 @@ function Home() {
 
     const formElem = event.target;
     const email = formElem.email.value;
-    
+
     if (!validateEmail(email)) {
       toast.update(toastId, {
-        render:
-          "Please enter a valid email address.",
+        render: "Please enter a valid email address.",
         type: "error",
         isLoading: false,
         autoClose: 4000,
         closeOnClick: true,
       });
 
-      setSubmitting(false)
+      setSubmitting(false);
       return;
     }
 
@@ -224,7 +227,7 @@ function Home() {
                         ref={daysRef}
                         className="text-[30px] md:text-[36px] lg:text-[55px] font-light -tracking-tight leading-[0.8] text-white"
                       >
-                        {initialDate.days}
+                        {initialDate.total > 0 ? initialDate.days : 0}
                       </span>
                     </div>
                     {/* label */}
@@ -262,7 +265,7 @@ function Home() {
                         ref={hoursRef}
                         className="text-[30px] md:text-[36px] lg:text-[55px] font-light -tracking-tight leading-[0.8] text-white"
                       >
-                        {initialDate.hours}
+                        {initialDate.total > 0 ? initialDate.hours : 0}
                       </span>
                     </div>
                     {/* label */}
@@ -300,7 +303,7 @@ function Home() {
                         ref={minutesRef}
                         className="text-[30px] md:text-[36px] lg:text-[55px] font-light -tracking-tight leading-[0.8] text-white"
                       >
-                        {initialDate.minutes}
+                        {initialDate.total > 0 ? initialDate.minutes : 0}
                       </span>
                     </div>
                     {/* label */}
@@ -338,7 +341,7 @@ function Home() {
                         ref={secondsRef}
                         className="text-[30px] md:text-[36px] lg:text-[55px] font-light -tracking-tight leading-[0.8] text-white"
                       >
-                        {initialDate.seconds}
+                        {initialDate.total > 0 ? initialDate.seconds : 0}
                       </span>
                     </div>
                     {/* label */}
